@@ -1,10 +1,10 @@
-# 功能：在 GitHub Actions 中按爱尔兰时间每天 07:00 触发 LiveScholar 文献监控任务。
-name: Daily literature monitor
+# 功能：在 GitHub Actions 中按爱尔兰时间每周一 07:00 触发 LiveScholar 文献监控任务。
+name: Weekly literature monitor
 
 on:
   schedule:
-    - cron: "0 6 * * *"
-    - cron: "0 7 * * *"
+    - cron: "0 6 * * 1"
+    - cron: "0 7 * * 1"
   workflow_dispatch:
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
       - name: Install package
         run: pip install -e .
 
-      - name: Run daily monitor
+      - name: Run weekly monitor
         env:
           LIVE_SCHOLAR_EMAIL_TO: ${{ secrets.LIVE_SCHOLAR_EMAIL_TO }}
           LIVE_SCHOLAR_EMAIL_FROM: ${{ secrets.LIVE_SCHOLAR_EMAIL_FROM }}
@@ -36,7 +36,7 @@ jobs:
           SEMANTIC_SCHOLAR_API_KEY: ${{ secrets.SEMANTIC_SCHOLAR_API_KEY }}
         run: |
           if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then
-            livescholar run --respect-schedule
+            livescholar run --respect-schedule --window-hours 240
           else
             livescholar manual
           fi

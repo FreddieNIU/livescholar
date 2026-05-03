@@ -1,6 +1,6 @@
-# 功能：配置每日文献监控的时区、检索主题、检索词和工业界 affiliation 关键词。
+# 功能：配置每周文献监控的时区、检索主题、检索词和工业界 affiliation 关键词。
 timezone: Europe/Dublin
-topic: "recommender systems semantic ID"
+topic: "generative and multimodal recommender systems"
 max_results_per_source: 50
 min_relevance_score: 3
 queries:
@@ -9,23 +9,46 @@ queries:
   - '"semantic identifier" recommender'
   - '"semantic token" recommendation'
   - '"generative retrieval" recommendation semantic ID'
+  - '"generative retrieval" recommender system'
+  - '"generative recommendation" recommender system'
+  - '"generative recommender" semantic token'
+  - '"large language model" recommendation system'
+  - '"LLM" recommender system'
+  - '"multimodal recommendation" large language model'
+  - '"multimodal recommender" generative'
+  - '"item tokenization" recommendation'
+  - '"item token" recommender system'
+  - '"visual semantic" recommendation'
+  - '"textual representation" recommender system'
   - '"ID generation" recommender system'
 industry_affiliations:
   - Adobe
   - Airbnb
   - Alibaba
+  - Ant Group
+  - Anthropic
   - Amazon
   - Apple
   - Baidu
   - ByteDance
+  - Cohere
+  - DeepSeek
   - Google
   - Huawei
   - JD.com
   - Kuaishou
+  - Meituan
   - Meta
   - Microsoft
+  - MiniMax
+  - Mistral AI
+  - Moonshot AI
   - Netflix
+  - NVIDIA
+  - OpenAI
   - Pinterest
+  - Qwen
+  - Salesforce
   - Snap
   - Spotify
   - Tencent
@@ -33,5 +56,7 @@ industry_affiliations:
   - Uber
   - WeChat
   - Xiaohongshu
+  - Xiaomi
   - Yahoo
   - YouTube
+  - Zhipu AI

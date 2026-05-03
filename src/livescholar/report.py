@@ -1,4 +1,4 @@
-"""功能：把筛选后的论文列表渲染为每日 Markdown 文献报告。"""
+"""功能：把筛选后的论文列表渲染为 Markdown 文献报告。"""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from .models import Paper, SearchWindow
 
 
 REPORT_TEMPLATE = Template(
-    """# LiveScholar Daily Report
+    """# LiveScholar Literature Report
 
 **Scope:** {{ settings.topic }}
 **Window:** {{ window.start.strftime("%Y-%m-%d %H:%M %Z") }} to {{ window.end.strftime("%Y-%m-%d %H:%M %Z") }}

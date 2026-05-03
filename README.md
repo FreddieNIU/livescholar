@@ -1,18 +1,18 @@
-<!-- 功能：说明 LiveScholar 项目结构、配置方式、运行命令、手动执行和 GitHub Actions 定时任务。 -->
+<!-- 功能：说明 LiveScholar 项目结构、配置方式、运行命令、手动执行和 GitHub Actions 每周定时任务。 -->
 
 # livescholar
 
-LiveScholar is a daily literature monitor for recommender-system papers related to semantic IDs. It searches recent arXiv and Google Scholar candidates, filters for semantic-ID recommendation relevance, highlights industry-affiliated work, generates a Markdown/HTML report, writes an execution log, and emails the report to the configured recipient.
+LiveScholar is a weekly literature monitor for generative and multimodal recommender-system papers, including work related to semantic IDs, generative retrieval, LLM-based recommendation, item tokenization, and multimodal item representations. It searches recent arXiv and Google Scholar candidates, filters for recommendation relevance, highlights industry-affiliated work, generates a Markdown/HTML report, writes an execution log, and emails the report to the configured recipient.
 
 ## What It Does
 
-- Runs automatically every day at 07:00 in `Europe/Dublin`.
-- Searches the scheduled window from yesterday 07:00 to the current scheduled execution time.
+- Runs automatically every Monday at 07:00 in `Europe/Dublin`.
+- Searches a 240-hour scheduled window ending at the current scheduled execution time.
 - Supports manual execution with a rolling 24-hour search window ending at the current time.
 - Searches arXiv directly.
 - Optionally searches Google Scholar through SerpAPI.
 - Enriches paper metadata through OpenAlex and Semantic Scholar.
-- Scores papers by semantic-ID terminology, recommendation-system relevance, and industry affiliation.
+- Scores papers by semantic-ID/generative-retrieval terminology, recommendation-system relevance, and industry affiliation.
 - Generates the same report format for scheduled and manual runs.
 - Sends the report by SMTP and stores local run records.
 
@@ -52,7 +52,7 @@ Main search settings live in [yaml/livescholar.yaml](/Users/freddie/Documents/li
 - `topic`: report scope.
 - `max_results_per_source`: per-query retrieval limit.
 - `min_relevance_score`: screening threshold.
-- `queries`: broad search terms for semantic-ID recommendation work.
+- `queries`: broad search terms for generative, multimodal, LLM-based, and semantic-ID recommendation work.
 - `industry_affiliations`: company names used to highlight industrial papers.
 
 ## Environment Variables
@@ -79,7 +79,7 @@ Scheduled semantics:
 python main.py run --dry-run
 ```
 
-This searches from yesterday 07:00 Ireland time to now. In GitHub Actions, scheduled runs add `--respect-schedule`, so the job exits unless the local Ireland hour is 07:00.
+By default this searches from yesterday 07:00 Ireland time to now. In GitHub Actions, scheduled runs add `--respect-schedule --window-hours 240`, so the weekly job exits unless the local Ireland hour is 07:00 and then searches the previous 240 hours.
 
 Manual semantics:
 
@@ -92,10 +92,10 @@ This detects the current time automatically and searches the previous 24 hours. 
 For debugging search coverage, override either mode with a longer rolling window ending now:
 
 ```bash
-python main.py manual --dry-run --window-hours 168
+python main.py manual --dry-run --window-hours 240
 ```
 
-This example searches the previous 7 days. Use `720` for roughly 30 days.
+This example matches the scheduled 240-hour weekly window. Use `720` for roughly 30 days.
 
 Installed CLI equivalents:
 
@@ -117,7 +117,7 @@ Remove `--dry-run` to send email.
 
 The workflow is in [.github/workflows/daily-literature.yml](/Users/freddie/Documents/livescholar/.github/workflows/daily-literature.yml).
 
-GitHub cron uses UTC and does not support time zones. To handle Irish winter/summer time, the workflow wakes at both `06:00` and `07:00` UTC. The command then checks whether the current local time in `Europe/Dublin` is 07:00 before doing work.
+GitHub cron uses UTC and does not support time zones. To handle Irish winter/summer time, the workflow wakes every Monday at both `06:00` and `07:00` UTC. The command then checks whether the current local time in `Europe/Dublin` is 07:00 before doing work. Scheduled runs use `--window-hours 240`.
 
 Manual `workflow_dispatch` runs use:
 
@@ -147,7 +147,7 @@ Only the SMTP variables are mandatory.
 For a local machine configured with timezone support:
 
 ```cron
-0 7 * * * cd /path/to/livescholar && . .venv/bin/activate && livescholar run
+0 7 * * 1 cd /path/to/livescholar && . .venv/bin/activate && livescholar run --window-hours 240
 ```
 
 ## Validation
@@ -155,7 +155,7 @@ For a local machine configured with timezone support:
 ```bash
 python -m pytest
 python -m ruff check .
-python main.py manual --dry-run
+python main.py run --dry-run --window-hours 240
 ```
 
 ## Notes On Search Coverage
