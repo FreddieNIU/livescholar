@@ -1,0 +1,37 @@
+timezone: Europe/Dublin
+topic: "recommender systems semantic ID"
+max_results_per_source: 50
+min_relevance_score: 3
+queries:
+  - '"semantic ID" recommender system'
+  - '"semantic IDs" recommendation'
+  - '"semantic identifier" recommender'
+  - '"semantic token" recommendation'
+  - '"generative retrieval" recommendation semantic ID'
+  - '"ID generation" recommender system'
+industry_affiliations:
+  - Adobe
+  - Airbnb
+  - Alibaba
+  - Amazon
+  - Apple
+  - Baidu
+  - ByteDance
+  - Google
+  - Huawei
+  - JD.com
+  - Kuaishou
+  - Meta
+  - Microsoft
+  - Netflix
+  - Pinterest
+  - Snap
+  - Spotify
+  - Tencent
+  - TikTok
+  - Uber
+  - WeChat
+  - Xiaohongshu
+  - Yahoo
+  - YouTube
+

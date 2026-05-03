@@ -1,0 +1,41 @@
+name: Daily literature monitor
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+
+jobs:
+  livescholar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install package
+        run: pip install -e .
+
+      - name: Run daily monitor
+        env:
+          LIVE_SCHOLAR_EMAIL_TO: ${{ secrets.LIVE_SCHOLAR_EMAIL_TO }}
+          LIVE_SCHOLAR_EMAIL_FROM: ${{ secrets.LIVE_SCHOLAR_EMAIL_FROM }}
+          LIVE_SCHOLAR_SMTP_HOST: ${{ secrets.LIVE_SCHOLAR_SMTP_HOST }}
+          LIVE_SCHOLAR_SMTP_PORT: ${{ secrets.LIVE_SCHOLAR_SMTP_PORT }}
+          LIVE_SCHOLAR_SMTP_USERNAME: ${{ secrets.LIVE_SCHOLAR_SMTP_USERNAME }}
+          LIVE_SCHOLAR_SMTP_PASSWORD: ${{ secrets.LIVE_SCHOLAR_SMTP_PASSWORD }}
+          SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
+          SEMANTIC_SCHOLAR_API_KEY: ${{ secrets.SEMANTIC_SCHOLAR_API_KEY }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then
+            livescholar run --respect-schedule
+          else
+            livescholar run
+          fi

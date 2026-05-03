@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "livescholar"
+version = "0.1.0"
+description = "Daily literature monitor for semantic-ID recommender-system papers."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "feedparser>=6.0.11",
+  "jinja2>=3.1.4",
+  "pydantic>=2.7.0",
+  "python-dateutil>=2.9.0",
+  "pyyaml>=6.0.1",
+  "requests>=2.32.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.2.0",
+  "ruff>=0.5.0",
+]
+
+[project.scripts]
+livescholar = "livescholar.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["livescholar*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
