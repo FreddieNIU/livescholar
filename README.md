@@ -89,6 +89,14 @@ python main.py manual --dry-run
 
 This detects the current time automatically and searches the previous 24 hours. The output report format is the same as the scheduled run.
 
+For debugging search coverage, override either mode with a longer rolling window ending now:
+
+```bash
+python main.py manual --dry-run --window-hours 168
+```
+
+This example searches the previous 7 days. Use `720` for roughly 30 days.
+
 Installed CLI equivalents:
 
 ```bash
@@ -153,4 +161,3 @@ python main.py manual --dry-run
 ## Notes On Search Coverage
 
 Google Scholar does not provide an official public API. This project uses SerpAPI when `SERPAPI_API_KEY` is present and records a clear search-log note when it is missing. arXiv search still runs without Google Scholar credentials.
-

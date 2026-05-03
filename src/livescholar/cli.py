@@ -8,7 +8,7 @@ from config.settings import load_settings
 from utils.emailer import send_report_email
 from utils.env import load_dotenv
 from utils.run_logs import write_run_log
-from utils.time_window import daily_window, is_scheduled_local_hour, rolling_24h_window
+from utils.time_window import daily_window, is_scheduled_local_hour, rolling_24h_window, rolling_window
 
 from .pipeline import run_pipeline
 
@@ -38,6 +38,11 @@ def add_run_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--output-dir", default="reports")
     parser.add_argument("--log-dir", default="logs")
     parser.add_argument("--dry-run", action="store_true", help="Generate the report without sending email.")
+    parser.add_argument(
+        "--window-hours",
+        type=float,
+        help="Override the default search window with a rolling window ending now, in hours.",
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -55,11 +60,15 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Skipping: current local hour is not 07:00 in {settings.timezone}.")
             return 0
 
-        window = (
-            daily_window(timezone=settings.timezone)
-            if args.command == "run"
-            else rolling_24h_window(timezone=settings.timezone)
-        )
+        try:
+            if args.window_hours is not None:
+                window = rolling_window(args.window_hours, timezone=settings.timezone)
+            elif args.command == "run":
+                window = daily_window(timezone=settings.timezone)
+            else:
+                window = rolling_24h_window(timezone=settings.timezone)
+        except ValueError as exc:
+            parser.error(str(exc))
         report_path, body, papers, search_log = run_pipeline(settings, window, args.output_dir)
         log_path = write_run_log(search_log, papers, window, args.log_dir)
         subject = f"LiveScholar: {len(papers)} semantic-ID recommender papers ({window.end:%Y-%m-%d})"

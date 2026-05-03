@@ -18,9 +18,19 @@ def daily_window(now: datetime | None = None, timezone: str = "Europe/Dublin") -
 
 
 def rolling_24h_window(now: datetime | None = None, timezone: str = "Europe/Dublin") -> SearchWindow:
+    return rolling_window(24, now, timezone)
+
+
+def rolling_window(
+    hours: float,
+    now: datetime | None = None,
+    timezone: str = "Europe/Dublin",
+) -> SearchWindow:
+    if hours <= 0:
+        raise ValueError("hours must be greater than 0")
     tz = ZoneInfo(timezone)
     local_now = now.astimezone(tz) if now else datetime.now(tz)
-    return SearchWindow(start=local_now - timedelta(hours=24), end=local_now, timezone=timezone)
+    return SearchWindow(start=local_now - timedelta(hours=hours), end=local_now, timezone=timezone)
 
 
 def is_scheduled_local_hour(now: datetime | None = None, timezone: str = "Europe/Dublin") -> bool:

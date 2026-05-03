@@ -2,7 +2,7 @@
 
 from datetime import UTC, datetime
 
-from utils.time_window import daily_window, is_scheduled_local_hour, rolling_24h_window
+from utils.time_window import daily_window, is_scheduled_local_hour, rolling_24h_window, rolling_window
 
 
 def test_daily_window_uses_ireland_seven_am_start_in_winter() -> None:
@@ -36,3 +36,12 @@ def test_manual_window_uses_rolling_24_hours() -> None:
     assert window.end.hour == 13
     assert window.start.hour == 13
     assert (window.end - window.start).total_seconds() == 24 * 60 * 60
+
+
+def test_custom_rolling_window_uses_requested_hours() -> None:
+    now = datetime(2026, 5, 3, 12, 15, tzinfo=UTC)
+    window = rolling_window(168, now, "Europe/Dublin")
+
+    assert window.end.hour == 13
+    assert window.start.day == 26
+    assert (window.end - window.start).total_seconds() == 168 * 60 * 60
