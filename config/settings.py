@@ -1,3 +1,5 @@
+"""功能：定义 LiveScholar 的配置数据模型，并从 YAML 文件加载运行配置。"""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -18,4 +20,3 @@ class Settings(BaseModel):
 def load_settings(path: str | Path) -> Settings:
     data = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
     return Settings.model_validate(data)
-

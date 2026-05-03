@@ -1,8 +1,10 @@
+"""功能：编排搜索、元数据补全、筛选排序和报告生成的完整执行流程。"""
+
 from __future__ import annotations
 
 from pathlib import Path
 
-from .config import Settings
+from config.settings import Settings
 from .models import Paper, SearchWindow
 from .relevance import in_window, score_paper
 from .report import render_report
@@ -33,4 +35,3 @@ def run_pipeline(
     search_log.append(f"Screened {len(raw_papers)} unique candidates; excluded {excluded}.")
     report_path, body = render_report(screened, settings, window, search_log, output_dir)
     return report_path, body, screened, search_log
-

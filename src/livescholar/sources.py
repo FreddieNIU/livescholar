@@ -1,3 +1,5 @@
+"""功能：从 arXiv、Google Scholar 和元数据服务检索、补全、去重论文候选。"""
+
 from __future__ import annotations
 
 import os
@@ -10,7 +12,7 @@ import feedparser
 import requests
 from dateutil import parser as date_parser
 
-from .config import Settings
+from config.settings import Settings
 from .models import Paper, SearchWindow
 
 HTTP_TIMEOUT = 30

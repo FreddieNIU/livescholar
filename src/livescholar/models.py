@@ -1,3 +1,5 @@
+"""功能：定义文献检索窗口和论文记录等核心数据结构。"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -33,4 +35,3 @@ class Paper:
     def display_date(self) -> str:
         dt = self.updated_at or self.published_at
         return dt.strftime("%Y-%m-%d %H:%M %Z") if dt else "unknown"
-

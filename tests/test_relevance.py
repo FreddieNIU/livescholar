@@ -1,3 +1,5 @@
+"""功能：验证论文相关性评分、工业界 affiliation 识别和时间窗口筛选。"""
+
 from datetime import UTC, datetime
 
 from livescholar.models import Paper, SearchWindow
@@ -35,4 +37,3 @@ def test_in_window_accepts_updated_or_published_date() -> None:
     )
 
     assert in_window(paper, window)
-

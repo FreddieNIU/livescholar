@@ -1,3 +1,5 @@
+"""功能：把 Markdown 文献报告转换为邮件正文，并通过 SMTP 发送给目标邮箱。"""
+
 from __future__ import annotations
 
 import os

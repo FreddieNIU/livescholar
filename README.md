@@ -1,8 +1,25 @@
+<!-- 功能：说明 LiveScholar 项目结构、配置方式、运行命令和 GitHub Actions 定时任务。 -->
+
 # livescholar
 
 Daily literature monitor for recommender-system papers about semantic IDs.
 
 The job runs once per day at 07:00 Europe/Dublin time, searches papers posted or updated since 07:00 the previous day, highlights industry-affiliated work, generates a Markdown/HTML report, and emails it to the configured recipient.
+
+## Project Structure
+
+```text
+.
+├── main.py                  # Main local entrypoint
+├── src/livescholar/         # Literature search, filtering, pipeline, and report domain code
+├── utils/                   # Environment, time window, email, and run-log helpers
+├── config/                  # Typed settings model and YAML loader
+├── yaml/                    # Editable runtime YAML configuration
+├── reports/                 # Generated Markdown reports
+├── logs/                    # Generated execution logs
+├── tests/                   # Unit tests
+└── .github/workflows/       # GitHub Actions scheduler
+```
 
 ## Quick Start
 
@@ -11,6 +28,12 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
 cp .env.example .env
+python main.py run --dry-run
+```
+
+The installed CLI is equivalent:
+
+```bash
 livescholar run --dry-run
 ```
 
@@ -42,3 +65,9 @@ For a machine configured with timezone support:
 0 7 * * * cd /path/to/livescholar && . .venv/bin/activate && livescholar run
 ```
 
+## Validation
+
+```bash
+python -m pytest
+python -m ruff check .
+```

@@ -1,8 +1,11 @@
+# 功能：忽略本地环境、缓存、构建产物和运行输出，保留目录说明文件。
 .venv/
 __pycache__/
 .pytest_cache/
 .ruff_cache/
 .env
-reports/
+reports/*
+!reports/README.md
+logs/*
+!logs/README.md
 *.egg-info/
-

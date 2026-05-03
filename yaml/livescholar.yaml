@@ -1,3 +1,4 @@
+# 功能：配置每日文献监控的时区、检索主题、检索词和工业界 affiliation 关键词。
 timezone: Europe/Dublin
 topic: "recommender systems semantic ID"
 max_results_per_source: 50
@@ -34,4 +35,3 @@ industry_affiliations:
   - Xiaohongshu
   - Yahoo
   - YouTube
-

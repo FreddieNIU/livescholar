@@ -1,3 +1,5 @@
+"""功能：验证论文候选去重逻辑优先使用 DOI/arXiv 等稳定标识。"""
+
 from livescholar.models import Paper
 from livescholar.sources import dedupe_papers
 
@@ -10,4 +12,3 @@ def test_dedupe_prefers_stable_identifiers() -> None:
     ]
 
     assert [paper.url for paper in dedupe_papers(papers)] == ["a", "c"]
-

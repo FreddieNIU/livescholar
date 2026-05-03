@@ -1,3 +1,5 @@
+"""功能：根据 semantic ID、推荐系统主题和工业界 affiliation 对论文筛选打分。"""
+
 from __future__ import annotations
 
 import re
@@ -73,4 +75,3 @@ def detect_industry_affiliations(affiliations: list[str], industry_names: list[s
         if any(needle in aff for aff in lowered_affiliations):
             hits.append(name)
     return sorted(set(hits))
-

@@ -1,9 +1,11 @@
+"""功能：计算每日 07:00 Europe/Dublin 定时任务对应的文献检索时间窗口。"""
+
 from __future__ import annotations
 
 from datetime import datetime, time, timedelta
 from zoneinfo import ZoneInfo
 
-from .models import SearchWindow
+from livescholar.models import SearchWindow
 
 
 def daily_window(now: datetime | None = None, timezone: str = "Europe/Dublin") -> SearchWindow:
@@ -19,4 +21,3 @@ def is_scheduled_local_hour(now: datetime | None = None, timezone: str = "Europe
     tz = ZoneInfo(timezone)
     local_now = now.astimezone(tz) if now else datetime.now(tz)
     return local_now.hour == 7
-

@@ -1,3 +1,5 @@
+"""功能：把筛选后的论文列表渲染为每日 Markdown 文献报告。"""
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -5,7 +7,7 @@ from pathlib import Path
 
 from jinja2 import Template
 
-from .config import Settings
+from config.settings import Settings
 from .models import Paper, SearchWindow
 
 
@@ -96,4 +98,3 @@ def render_report(
     path = out_dir / f"livescholar-{window.end.strftime('%Y-%m-%d')}.md"
     path.write_text(body, encoding="utf-8")
     return path, body
-
