@@ -2,23 +2,10 @@
 
 from __future__ import annotations
 
-from datetime import datetime, time, timedelta
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 from livescholar.models import SearchWindow
-
-
-def daily_window(now: datetime | None = None, timezone: str = "Europe/Dublin") -> SearchWindow:
-    tz = ZoneInfo(timezone)
-    local_now = now.astimezone(tz) if now else datetime.now(tz)
-    end = local_now
-    start_day = (local_now - timedelta(days=1)).date()
-    start = datetime.combine(start_day, time(hour=7), tzinfo=tz)
-    return SearchWindow(start=start, end=end, timezone=timezone)
-
-
-def rolling_24h_window(now: datetime | None = None, timezone: str = "Europe/Dublin") -> SearchWindow:
-    return rolling_window(24, now, timezone)
 
 
 def rolling_window(

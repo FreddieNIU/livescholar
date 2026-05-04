@@ -7,8 +7,8 @@ LiveScholar is a weekly literature monitor for generative and multimodal recomme
 ## What It Does
 
 - Runs automatically every Monday in `Europe/Dublin`.
-- Searches a 240-hour scheduled window ending at the current scheduled execution time.
-- Supports manual execution with a rolling 24-hour search window ending at the current time.
+- Searches a 240-hour rolling window ending at the current execution time.
+- Supports `--window-hours` to override the default window explicitly.
 - Searches arXiv directly.
 - Optionally searches Google Scholar through SerpAPI.
 - Enriches paper metadata through OpenAlex and Semantic Scholar.
@@ -79,7 +79,7 @@ Scheduled semantics:
 python main.py run --dry-run
 ```
 
-By default this searches from yesterday 07:00 Ireland time to now. In GitHub Actions, scheduled runs add `--respect-schedule --window-hours 240`, so the weekly job exits unless the local Ireland day is Monday and then searches the previous 240 hours.
+By default this searches the previous 240 hours ending now. In GitHub Actions, scheduled runs add `--respect-schedule`, so the weekly job exits unless the local Ireland day is Monday and then searches the same default 240-hour window.
 
 Manual semantics:
 
@@ -87,15 +87,15 @@ Manual semantics:
 python main.py manual --dry-run
 ```
 
-This detects the current time automatically and searches the previous 24 hours. The output report format is the same as the scheduled run.
+This uses the same default 240-hour rolling window as `run`. The output report format is the same as the scheduled run.
 
-For debugging search coverage, override either mode with a longer rolling window ending now:
+For debugging search coverage, override either mode with an explicit rolling window ending now:
 
 ```bash
-python main.py manual --dry-run --window-hours 240
+python main.py manual --dry-run --window-hours 720
 ```
 
-This example matches the scheduled 240-hour weekly window. Use `720` for roughly 30 days.
+This example uses roughly 30 days.
 
 Installed CLI equivalents:
 
@@ -117,15 +117,15 @@ Remove `--dry-run` to send email.
 
 The workflow is in [.github/workflows/daily-literature.yml](/Users/freddie/Documents/livescholar/.github/workflows/daily-literature.yml).
 
-GitHub cron uses UTC and does not support time zones, and scheduled jobs may start late. The workflow wakes once every Monday at `07:00` UTC. The command then checks whether the current local day in `Europe/Dublin` is Monday before doing work. Scheduled runs use `--window-hours 240`.
+GitHub cron uses UTC and does not support time zones, and scheduled jobs may start late. The workflow wakes once every Monday at `07:00` UTC. The command then checks whether the current local day in `Europe/Dublin` is Monday before doing work. Scheduled runs use the default 240-hour window.
 
 Manual `workflow_dispatch` runs use:
 
 ```bash
-livescholar manual
+livescholar run
 ```
 
-That gives an on-demand rolling 24-hour report.
+That gives an on-demand report with the same 240-hour window as the scheduled weekly run.
 
 Add these GitHub repository secrets before enabling email delivery:
 
@@ -147,7 +147,7 @@ Only the SMTP variables are mandatory.
 For a local machine configured with timezone support:
 
 ```cron
-0 7 * * 1 cd /path/to/livescholar && . .venv/bin/activate && livescholar run --window-hours 240
+0 7 * * 1 cd /path/to/livescholar && . .venv/bin/activate && livescholar run
 ```
 
 ## Validation
@@ -155,7 +155,7 @@ For a local machine configured with timezone support:
 ```bash
 python -m pytest
 python -m ruff check .
-python main.py run --dry-run --window-hours 240
+python main.py run --dry-run
 ```
 
 ## Notes On Search Coverage

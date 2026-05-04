@@ -8,13 +8,15 @@ from config.settings import load_settings
 from utils.emailer import send_report_email
 from utils.env import load_dotenv
 from utils.run_logs import write_run_log
-from utils.time_window import daily_window, is_scheduled_local_monday, rolling_24h_window, rolling_window
+from utils.time_window import is_scheduled_local_monday, rolling_window
 
 from .pipeline import run_pipeline
 
+DEFAULT_WINDOW_HOURS = 240
+
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Run the LiveScholar daily literature monitor.")
+    parser = argparse.ArgumentParser(description="Run the LiveScholar literature monitor.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     run = subparsers.add_parser("run", help="Search literature, generate a report, and email it.")
@@ -27,7 +29,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     manual = subparsers.add_parser(
         "manual",
-        help="Search the rolling 24-hour window ending now, then generate the same report/email.",
+        help="Search literature immediately, generate a report, and email it.",
     )
     add_run_arguments(manual)
     return parser
@@ -41,7 +43,7 @@ def add_run_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--window-hours",
         type=float,
-        help="Override the default search window with a rolling window ending now, in hours.",
+        help=f"Override the default {DEFAULT_WINDOW_HOURS:g}-hour rolling window ending now.",
     )
 
 
@@ -61,12 +63,8 @@ def main(argv: list[str] | None = None) -> int:
             return 0
 
         try:
-            if args.window_hours is not None:
-                window = rolling_window(args.window_hours, timezone=settings.timezone)
-            elif args.command == "run":
-                window = daily_window(timezone=settings.timezone)
-            else:
-                window = rolling_24h_window(timezone=settings.timezone)
+            window_hours = args.window_hours if args.window_hours is not None else DEFAULT_WINDOW_HOURS
+            window = rolling_window(window_hours, timezone=settings.timezone)
         except ValueError as exc:
             parser.error(str(exc))
         report_path, body, papers, search_log = run_pipeline(settings, window, args.output_dir)
