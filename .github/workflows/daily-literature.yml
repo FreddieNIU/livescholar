@@ -1,9 +1,8 @@
-# 功能：在 GitHub Actions 中按爱尔兰时间每周一 07:00 触发 LiveScholar 文献监控任务。
+# 功能：在 GitHub Actions 中按爱尔兰时间每周一触发 LiveScholar 文献监控任务。
 name: Weekly literature monitor
 
 on:
   schedule:
-    - cron: "0 6 * * 1"
     - cron: "0 7 * * 1"
   workflow_dispatch:
 

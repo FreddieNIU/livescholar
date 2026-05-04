@@ -33,7 +33,7 @@ def rolling_window(
     return SearchWindow(start=local_now - timedelta(hours=hours), end=local_now, timezone=timezone)
 
 
-def is_scheduled_local_hour(now: datetime | None = None, timezone: str = "Europe/Dublin") -> bool:
+def is_scheduled_local_monday(now: datetime | None = None, timezone: str = "Europe/Dublin") -> bool:
     tz = ZoneInfo(timezone)
     local_now = now.astimezone(tz) if now else datetime.now(tz)
-    return local_now.hour == 7
+    return local_now.weekday() == 0

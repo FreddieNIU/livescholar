@@ -1,8 +1,8 @@
-"""功能：验证每日 07:00 Ireland 时间窗口、手动 24 小时窗口和调度守卫逻辑。"""
+"""功能：验证每日 07:00 Ireland 时间窗口、手动 24 小时窗口和周一调度守卫逻辑。"""
 
 from datetime import UTC, datetime
 
-from utils.time_window import daily_window, is_scheduled_local_hour, rolling_24h_window, rolling_window
+from utils.time_window import daily_window, is_scheduled_local_monday, rolling_24h_window, rolling_window
 
 
 def test_daily_window_uses_ireland_seven_am_start_in_winter() -> None:
@@ -24,9 +24,10 @@ def test_daily_window_handles_irish_summer_time() -> None:
     assert window.start.day == 2
 
 
-def test_schedule_guard_checks_local_hour() -> None:
-    assert is_scheduled_local_hour(datetime(2026, 5, 3, 6, 30, tzinfo=UTC), "Europe/Dublin")
-    assert not is_scheduled_local_hour(datetime(2026, 5, 3, 7, 30, tzinfo=UTC), "Europe/Dublin")
+def test_schedule_guard_checks_local_monday() -> None:
+    assert is_scheduled_local_monday(datetime(2026, 5, 4, 8, 25, tzinfo=UTC), "Europe/Dublin")
+    assert is_scheduled_local_monday(datetime(2026, 5, 4, 6, 0, tzinfo=UTC), "Europe/Dublin")
+    assert not is_scheduled_local_monday(datetime(2026, 5, 3, 6, 30, tzinfo=UTC), "Europe/Dublin")
 
 
 def test_manual_window_uses_rolling_24_hours() -> None:

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import re
+import time
 from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
 from urllib.parse import quote_plus
@@ -16,6 +17,8 @@ from config.settings import Settings
 from .models import Paper, SearchWindow
 
 HTTP_TIMEOUT = 30
+HTTP_RETRIES = 3
+HTTP_RETRY_BACKOFF_SECONDS = 2.0
 
 
 def search_all(settings: Settings, window: SearchWindow) -> tuple[list[Paper], list[str]]:
@@ -49,7 +52,7 @@ def search_arxiv(settings: Settings, window: SearchWindow) -> tuple[list[Paper],
         )
         logs.append(f"arXiv query: {arxiv_query}")
         try:
-            feed = feedparser.parse(requests.get(url, timeout=HTTP_TIMEOUT).text)
+            feed = feedparser.parse(_get_text_with_retries(url, logs, source="arXiv", query=query))
         except requests.RequestException as exc:
             logs.append(f"arXiv request failed for {query!r}: {exc}")
             continue
@@ -57,6 +60,34 @@ def search_arxiv(settings: Settings, window: SearchWindow) -> tuple[list[Paper],
             papers.append(_paper_from_arxiv_entry(entry))
 
     return papers, logs
+
+
+def _get_text_with_retries(
+    url: str,
+    logs: list[str],
+    *,
+    source: str,
+    query: str,
+    attempts: int = HTTP_RETRIES,
+    backoff_seconds: float = HTTP_RETRY_BACKOFF_SECONDS,
+) -> str:
+    last_exc: requests.RequestException | None = None
+    for attempt in range(1, attempts + 1):
+        try:
+            response = requests.get(url, timeout=HTTP_TIMEOUT)
+            response.raise_for_status()
+            return response.text
+        except requests.RequestException as exc:
+            last_exc = exc
+            if attempt == attempts:
+                break
+            logs.append(
+                f"{source} request attempt {attempt}/{attempts} failed for {query!r}; retrying: {exc}"
+            )
+            time.sleep(backoff_seconds * attempt)
+    if last_exc is None:
+        raise requests.RequestException(f"{source} request failed without an exception.")
+    raise last_exc
 
 
 def search_google_scholar(settings: Settings, window: SearchWindow) -> tuple[list[Paper], list[str]]:

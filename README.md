@@ -6,7 +6,7 @@ LiveScholar is a weekly literature monitor for generative and multimodal recomme
 
 ## What It Does
 
-- Runs automatically every Monday at 07:00 in `Europe/Dublin`.
+- Runs automatically every Monday in `Europe/Dublin`.
 - Searches a 240-hour scheduled window ending at the current scheduled execution time.
 - Supports manual execution with a rolling 24-hour search window ending at the current time.
 - Searches arXiv directly.
@@ -79,7 +79,7 @@ Scheduled semantics:
 python main.py run --dry-run
 ```
 
-By default this searches from yesterday 07:00 Ireland time to now. In GitHub Actions, scheduled runs add `--respect-schedule --window-hours 240`, so the weekly job exits unless the local Ireland hour is 07:00 and then searches the previous 240 hours.
+By default this searches from yesterday 07:00 Ireland time to now. In GitHub Actions, scheduled runs add `--respect-schedule --window-hours 240`, so the weekly job exits unless the local Ireland day is Monday and then searches the previous 240 hours.
 
 Manual semantics:
 
@@ -117,7 +117,7 @@ Remove `--dry-run` to send email.
 
 The workflow is in [.github/workflows/daily-literature.yml](/Users/freddie/Documents/livescholar/.github/workflows/daily-literature.yml).
 
-GitHub cron uses UTC and does not support time zones. To handle Irish winter/summer time, the workflow wakes every Monday at both `06:00` and `07:00` UTC. The command then checks whether the current local time in `Europe/Dublin` is 07:00 before doing work. Scheduled runs use `--window-hours 240`.
+GitHub cron uses UTC and does not support time zones, and scheduled jobs may start late. The workflow wakes once every Monday at `07:00` UTC. The command then checks whether the current local day in `Europe/Dublin` is Monday before doing work. Scheduled runs use `--window-hours 240`.
 
 Manual `workflow_dispatch` runs use:
 

@@ -8,7 +8,7 @@ from config.settings import load_settings
 from utils.emailer import send_report_email
 from utils.env import load_dotenv
 from utils.run_logs import write_run_log
-from utils.time_window import daily_window, is_scheduled_local_hour, rolling_24h_window, rolling_window
+from utils.time_window import daily_window, is_scheduled_local_monday, rolling_24h_window, rolling_window
 
 from .pipeline import run_pipeline
 
@@ -22,7 +22,7 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument(
         "--respect-schedule",
         action="store_true",
-        help="Exit unless the current Europe/Dublin local hour is 07:00.",
+        help="Exit unless the current Europe/Dublin local day is Monday.",
     )
 
     manual = subparsers.add_parser(
@@ -55,9 +55,9 @@ def main(argv: list[str] | None = None) -> int:
         if (
             args.command == "run"
             and args.respect_schedule
-            and not is_scheduled_local_hour(timezone=settings.timezone)
+            and not is_scheduled_local_monday(timezone=settings.timezone)
         ):
-            print(f"Skipping: current local hour is not 07:00 in {settings.timezone}.")
+            print(f"Skipping: current local day is not Monday in {settings.timezone}.")
             return 0
 
         try:
